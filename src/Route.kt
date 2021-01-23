@@ -9,8 +9,8 @@ import io.ktor.routing.*
 fun Route.userRoute(userService: UserService) {
 
     route("/user") {
-        get("/") {
-            call.respond(userService.getAllUsers())
+        get("/list") {
+            call.respond(userService.getALlRestaurants())
         }
 
         get("/{id}") {
@@ -22,7 +22,8 @@ fun Route.userRoute(userService: UserService) {
 
         post("/add") {
             val user = call.receive<User>()
-            call.respond(userService.addUser(user))
+            userService.addUser(user)
+            call.respond(HttpStatusCode.Accepted)
         }
     }
 }
