@@ -9,7 +9,7 @@ class ApplicationTest {
     @Test
     fun testRoot() {
         withTestApplication({ module(testing = true) }) {
-            handleRequest(HttpMethod.Get, "/user").apply {
+            handleRequest(HttpMethod.Get, "/user/list").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
             }
         }

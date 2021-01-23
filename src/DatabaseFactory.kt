@@ -13,11 +13,6 @@ object DatabaseFactory {
         Database.connect(hikari())
         transaction {
             SchemaUtils.create(Users)
-            ListResponse.insert {
-                it[error] = false
-                it[message] = "success"
-                it[count] = 20
-            }
             Users.insert {
                 it[name] = "Jova Andreas"
                 it[registerDate] = System.currentTimeMillis()
