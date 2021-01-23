@@ -1,1 +1,1 @@
-web:    java -jar example-all.jar
+web:    java -jar build/libs/example-all.jar
