@@ -20,7 +20,7 @@ fun Route.userRoute(userService: UserService) {
             else call.respond(user)
         }
 
-        post("add") {
+        post("/add") {
             val user = call.receive<User>()
             call.respond(userService.addUser(user))
         }
