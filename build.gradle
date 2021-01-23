@@ -24,6 +24,8 @@ sourceSets {
     test.resources.srcDirs = ['testresources']
 }
 
+task stage(dependsOn: ['clean', 'installDist'])
+
 repositories {
     mavenCentral()
     mavenLocal()
