@@ -8,9 +8,13 @@ import io.ktor.routing.*
 
 fun Route.userRoute(userService: UserService) {
 
-    route("/user") {
-        get("/list") {
+    route("/") {
+        get("/") {
             call.respond(userService.getALlRestaurants())
+        }
+
+        get("/user") {
+            call.respond(userService.getAllUsers())
         }
 
         get("/{id}") {
