@@ -1,3 +1,3 @@
 # simple-ktor
 
-Ktor Simple Project
+Ktor Simple Project - Rest Api
