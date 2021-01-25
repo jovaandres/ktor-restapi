@@ -54,5 +54,7 @@ dependencies {
 
     implementation "ch.qos.logback:logback-classic:$logback_version"
 
+    runtime group: 'org.postgresql', name: 'postgresql', version: '42.2.2'
+
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
 }

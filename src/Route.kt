@@ -10,23 +10,22 @@ fun Route.userRoute(userService: UserService) {
 
     route("/") {
         get("/") {
-            call.respond(userService.getALlRestaurants())
+            val response = userService.getListResponse()
+            val restaurant = userService.getListRestaurant()
+            response.restaurants = restaurant
+            call.respond(response)
         }
 
-        get("/user") {
-            call.respond(userService.getAllUsers())
-        }
-
-        get("/{id}") {
-            val id = call.parameters["id"]?.toInt() ?: throw IllegalStateException("Must provided id")
-            val user = userService.getUser(id)
-            if (user == null) call.respond(HttpStatusCode.NotFound)
-            else call.respond(user)
+        get("search/{query}") {
+            val query = call.parameters["query"] ?: throw IllegalStateException("Must provided query")
+            val restaurant = userService.searchRestaurant(query)
+            if (restaurant == null) call.respond(HttpStatusCode.NotFound)
+            else call.respond(restaurant)
         }
 
         post("/add") {
-            val user = call.receive<User>()
-            userService.addUser(user)
+            val restaurant = call.receive<Restaurant>()
+            userService.addRestaurant(restaurant)
             call.respond(HttpStatusCode.Accepted)
         }
     }
