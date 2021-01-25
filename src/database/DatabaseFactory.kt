@@ -7,7 +7,14 @@ import org.jetbrains.exposed.sql.Database
 object DatabaseFactory {
 
     fun init() {
-        Database.connect(hikari())
+        val url =
+            "jdbc:postgresql://${System.getenv("HOST")}:5432/${System.getenv("DATABASE")}?sslmode=require"
+        Database.connect(
+            url,
+            "org.postgresql.Driver",
+            System.getenv("USERNAME"),
+            System.getenv("PASSWORD"),
+        )
     }
 
     private fun hikari(): HikariDataSource {

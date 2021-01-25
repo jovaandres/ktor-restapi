@@ -1,8 +1,7 @@
 package com.example.ktorproject.model
 
-data class Response(
+data class DetailResponse(
     val error: Boolean,
     val message: String,
-    val count: Int?,
-    var restaurants: List<Restaurant>?
+    val restaurant: RestaurantDetail?
 )

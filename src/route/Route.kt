@@ -15,7 +15,8 @@ fun Route.userRoute(userService: RestaurantService) {
     route("/") {
         get("/") {
             try {
-                call.respond("/index.html")
+                val indexPage = javaClass.getResource("/index.html").readText()
+                call.respondText(indexPage, ContentType.Text.Html)
             } catch (e: Exception) {
                 call.respond(HttpStatusCode.GatewayTimeout)
             }
@@ -78,17 +79,31 @@ fun Route.userRoute(userService: RestaurantService) {
                     foods = foods,
                     drinks = drinks
                 )
-                call.respond(detail as RestaurantDetail)
+                val response = DetailResponse(
+                    error = false,
+                    message = "success",
+                    restaurant = detail
+                )
+                call.respond(response)
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.NotFound)
+                val response = DetailResponse(
+                    error = true,
+                    message = e.message.toString(),
+                    null
+                )
+                call.respond(response)
             }
         }
 
         post("/generate_token") {
             val user = call.receive<User>()
-            val token = JWTConfig.generateToken(user)
-            call.respond("Username: ${user.name} \nToken: $token\n" +
-                    "Add token to header => Authorization: Bearer <YOUR-TOKEN>")
+            try {
+                val token = JWTConfig.generateToken(user)
+                call.respond("Username: ${user.name} \nToken: $token\n" +
+                        "Add token to header => Authorization: Bearer <YOUR-TOKEN>")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.BadGateway, e.message.toString())
+            }
         }
 
         authenticate {
@@ -99,7 +114,7 @@ fun Route.userRoute(userService: RestaurantService) {
                     userService.addRestaurant(restaurant)
                     call.respond(HttpStatusCode.Accepted)
                 } catch (e: Exception) {
-                    call.respond(e.message.toString())
+                    call.respond(HttpStatusCode.BadGateway, e.message.toString())
                 }
             }
 
@@ -109,7 +124,7 @@ fun Route.userRoute(userService: RestaurantService) {
                     userService.addDetailRestaurant(restaurantDetail)
                     call.respond(HttpStatusCode.Accepted)
                 } catch (e: Exception) {
-                    call.respond(e.message.toString())
+                    call.respond(HttpStatusCode.BadGateway, e.message.toString())
                 }
             }
 
@@ -119,7 +134,7 @@ fun Route.userRoute(userService: RestaurantService) {
                     userService.addReview(review)
                     call.respond(HttpStatusCode.Accepted)
                 } catch (e: Exception) {
-                    call.respond(e.message.toString())
+                    call.respond(HttpStatusCode.BadGateway, e.message.toString())
                 }
             }
         }
