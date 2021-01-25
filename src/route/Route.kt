@@ -1,8 +1,10 @@
 package com.example.ktorproject.route
 
+import com.example.ktorproject.JWTConfig
 import com.example.ktorproject.controller.RestaurantService
 import com.example.ktorproject.model.*
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
@@ -74,34 +76,46 @@ fun Route.userRoute(userService: RestaurantService) {
             }
         }
 
-        post("/add") {
-            val restaurant = call.receive<Restaurant>()
-            try {
-                userService.addRestaurant(restaurant)
-                call.respond(HttpStatusCode.Accepted)
-            } catch (e: Exception) {
-                call.respond(e.message.toString())
-            }
+        post("/generate_token") {
+            val user = call.receive<User>()
+            val token = JWTConfig.generateToken(user)
+            call.respond("Username: ${user.name} \nToken: $token\n" +
+                    "Add token to header => Authorization: Bearer <YOUR-TOKEN>")
         }
 
-        post("/detail/add") {
-            val restaurantDetail = call.receive<RestaurantDetail>()
-            try {
-                userService.addDetailRestaurant(restaurantDetail)
-                call.respond(HttpStatusCode.Accepted)
-            } catch (e: Exception) {
-                call.respond(e.message.toString())
+        authenticate {
+
+            post("/add") {
+                val restaurant = call.receive<Restaurant>()
+                try {
+                    userService.addRestaurant(restaurant)
+                    call.respond(HttpStatusCode.Accepted)
+                } catch (e: Exception) {
+                    call.respond(e.message.toString())
+                }
             }
-        }
-        
-        post("/review") {
-            val review = call.receive<PostReview>()
-            try {
-                userService.addReview(review)
-                call.respond(HttpStatusCode.Accepted)
-            } catch (e: Exception) {
-                call.respond(e.message.toString())
+
+            post("/detail/add") {
+                val restaurantDetail = call.receive<RestaurantDetail>()
+                try {
+                    userService.addDetailRestaurant(restaurantDetail)
+                    call.respond(HttpStatusCode.Accepted)
+                } catch (e: Exception) {
+                    call.respond(e.message.toString())
+                }
+            }
+
+            post("/review") {
+                val review = call.receive<PostReview>()
+                try {
+                    userService.addReview(review)
+                    call.respond(HttpStatusCode.Accepted)
+                } catch (e: Exception) {
+                    call.respond(e.message.toString())
+                }
             }
         }
     }
 }
+
+val ApplicationCall.user get() = authentication.principal<User>()
