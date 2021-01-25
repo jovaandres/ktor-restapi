@@ -15,6 +15,14 @@ fun Route.userRoute(userService: RestaurantService) {
     route("/") {
         get("/") {
             try {
+                call.respond("/index.html")
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.GatewayTimeout)
+            }
+        }
+
+        get("/list") {
+            try {
                 val restaurant = userService.getListRestaurant()
                 val response = Response(
                     error = false,
