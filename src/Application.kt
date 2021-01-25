@@ -1,5 +1,8 @@
 package com.example.ktorproject
 
+import com.example.ktorproject.controller.RestaurantService
+import com.example.ktorproject.database.DatabaseFactory
+import com.example.ktorproject.route.userRoute
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.*
 import io.ktor.features.*
@@ -24,7 +27,7 @@ fun Application.module(testing: Boolean = false) {
 
     DatabaseFactory.init()
 
-    val userService = UserService()
+    val userService = RestaurantService()
 
     install(Routing) {
         userRoute(userService)
