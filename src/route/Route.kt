@@ -32,6 +32,17 @@ fun Route.userRoute(userService: RestaurantService) {
                 call.respond(HttpStatusCode.NotFound, e.message.toString())
             }
         }
+        
+        get("/img/{id}") {
+            val id = call.parameters["id"] ?: throw IllegalStateException("Must provided id")
+            val type = call.parameters["type"] ?: throw IllegalStateException("Must provided type")
+            try {
+                val image = javaClass.getResource("/image/$id.png").readBytes()
+                call.respond(image)
+            } catch (e: Exception) {
+                call.respond(HttpStatusCode.NotFound, e.message.toString())
+            }
+        }
 
         get("/list") {
             try {
